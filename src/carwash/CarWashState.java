@@ -27,7 +27,7 @@ public class CarWashState extends State {
     private int enteredCars;
     private double totalQueueTime;
     private double totalIdleTime;
-/*transcrop */
+/*transcrop cdcdcdccd*/
     private String eventName = "";
     private int eventCarId = -1;
     private String eventMachine = "-";
