@@ -1,4 +1,4 @@
-package labb6.Event;
+package Event;
 
 import simulator.Simulator;
 import simulator.State;

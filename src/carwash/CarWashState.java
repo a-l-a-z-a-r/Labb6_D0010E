@@ -1,8 +1,5 @@
 package carwash;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import random.ExponentialRandomStream;
 import random.UniformRandomStream;
 import simulator.State;
@@ -18,7 +15,6 @@ public class CarWashState extends State {
     private int freeSlow;
     private final int maxQueueSize;
     private final FIFO queue = new FIFO();
-    private final Map<Integer, Double> queuedAt = new HashMap<>();
     private final UniformRandomStream fastServiceStream;
     private final UniformRandomStream slowServiceStream;
     private final ExponentialRandomStream arrivalStream;
@@ -27,7 +23,7 @@ public class CarWashState extends State {
     private int enteredCars;
     private double totalQueueTime;
     private double totalIdleTime;
-/*transcrop cdcdcdccd*/
+
     private String eventName = "";
     private int eventCarId = -1;
     private String eventMachine = "-";
@@ -100,12 +96,11 @@ public class CarWashState extends State {
     }
 
     public void markQueued(Car car) {
-        queuedAt.put(car.getId(), currentTime);
+        car.setQueuedAt(currentTime);
     }
 
     public double dequeueQueueTime(Car car) {
-        double queuedTime = queuedAt.remove(car.getId());
-        return currentTime - queuedTime;
+        return currentTime - car.getQueuedAt();
     }
 
     public void rejectCar() {

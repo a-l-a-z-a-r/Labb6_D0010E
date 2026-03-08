@@ -16,7 +16,6 @@ public class StatusView implements Observer {
         this.state = state;
         this.out = new Formatter(System.out, Locale.US);
     }
-
     @Override
     public void update() {
         String carText = state.getEventCarId() >= 0 ? Integer.toString(state.getEventCarId()) : "-";

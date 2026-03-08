@@ -1,4 +1,4 @@
-package labb6.Car;
+package Car;
 
 public class CarMachine {
 	public enum Type {

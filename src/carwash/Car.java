@@ -1,21 +1,26 @@
 package carwash;
 
 /**
- * Car entity with a unique id.
+ * Represents one car in the simulation.
  */
 public class Car {
     private final int id;
+    private double queuedAt;
 
     public Car(int id) {
         this.id = id;
+        this.queuedAt = -1;
     }
 
     public int getId() {
         return id;
     }
 
-    @Override
-    public String toString() {
-        return Integer.toString(id);
+    public void setQueuedAt(double queuedAt) {
+        this.queuedAt = queuedAt;
+    }
+
+    public double getQueuedAt() {
+        return queuedAt;
     }
 }
