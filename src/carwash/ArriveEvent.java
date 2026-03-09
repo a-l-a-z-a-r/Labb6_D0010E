@@ -12,36 +12,36 @@ public class ArriveEvent extends CarWashEvent {
     }
 
     @Override
-    public void execute(Simulator sim, State genericState) {
-        CarWashState state = (CarWashState) genericState;
-        state.advanceTime(getTime());
+    public void execute(Simulator sim, State state) {
+        CarWashState carWashState = (CarWashState) state;
+        carWashState.advanceTime(getTime());
 
         String machine = "-";
 
-        if (state.getFreeFast() > 0) {
-            state.decreaseFast();
-            state.countEnteredCar();
-            double service = state.nextFastServiceTime();
+        if (carWashState.getFreeFast() > 0) {
+            carWashState.decreaseFast();
+            carWashState.countEnteredCar();
+            double service = carWashState.nextFastServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, car, true));
             machine = "Fast";
-        } else if (state.getFreeSlow() > 0) {
-            state.decreaseSlow();
-            state.countEnteredCar();
-            double service = state.nextSlowServiceTime();
+        } else if (carWashState.getFreeSlow() > 0) {
+            carWashState.decreaseSlow();
+            carWashState.countEnteredCar();
+            double service = carWashState.nextSlowServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, car, false));
             machine = "Slow";
-        } else if (state.canQueueMore()) {
-            state.countEnteredCar();
-            state.getQueue().add(car);
-            state.markQueued(car);
+        } else if (carWashState.canQueueMore()) {
+            carWashState.countEnteredCar();
+            carWashState.getQueue().add(car);
+            carWashState.markQueued(car);
         } else {
-            state.rejectCar();
+            carWashState.rejectCar();
         }
 
-        Car nextCar = new Car(state.nextCarId());
-        sim.schedule(new ArriveEvent(getTime() + state.nextArrivalDelta(), nextCar));
+        Car nextCar = new Car(carWashState.nextCarId());
+        sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), nextCar));
 
-        state.setEventSnapshot("Arrive", car.getId(), machine);
-        state.notifyObservers();
+        carWashState.setEventSnapshot("Arrive", car.getId(), machine);
+        carWashState.notifyObservers();
     }
 }

@@ -28,13 +28,7 @@ public class CarWashState extends State {
     private int eventCarId = -1;
     private String eventMachine = "-";
 
-    public CarWashState(
-            int fastMachines,
-            int slowMachines,
-            int maxQueueSize,
-            ExponentialRandomStream arrivalStream,
-            UniformRandomStream fastServiceStream,
-            UniformRandomStream slowServiceStream) {
+    public CarWashState(int fastMachines, int slowMachines,  int maxQueueSize, ExponentialRandomStream arrivalStream, UniformRandomStream fastServiceStream, UniformRandomStream slowServiceStream) {
         this.totalFast = fastMachines;
         this.totalSlow = slowMachines;
         this.freeFast = fastMachines;
@@ -54,10 +48,10 @@ public class CarWashState extends State {
     }
 
     public void advanceTime(double newTime) {
-        double dt = newTime - currentTime;
-        if (dt > 0) {
-            totalIdleTime += dt * (freeFast + freeSlow);
-            totalQueueTime += dt * queue.size();
+        double lastTimeSession = newTime - currentTime;
+        if (lastTimeSession > 0) {
+            totalIdleTime += lastTimeSession * (freeFast + freeSlow);
+            totalQueueTime += lastTimeSession * queue.size();
         }
         currentTime = newTime;
     }
@@ -114,7 +108,7 @@ public class CarWashState extends State {
         totalIdleTime += t;
     }
 
-    public double nextArrivalDelta() {
+    public double cariscomingnow() {
         return arrivalStream.next();
     }
 

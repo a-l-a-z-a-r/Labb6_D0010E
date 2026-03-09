@@ -15,26 +15,32 @@ public class LeaveEvent extends CarWashEvent {
     }
 
     @Override
-    public void execute(Simulator sim, State genericState) {
-        CarWashState state = (CarWashState) genericState;
-        state.advanceTime(getTime());
+    public void execute(Simulator sim, State state) {
+        CarWashState carWashState = (CarWashState) state;
+        carWashState.advanceTime(getTime());
 
-        String machine = fastMachine ? "Fast" : "Slow";
+                                                                                                                                                                                       
+        String machine;                                                                                                                                                               
+        if (fastMachine) {                                                                                                                                                            
+            machine = "Fast";                                                                                                                                                         
+        } else {                                                                                                                                                                      
+            machine = "Slow";                                                                                                                                                         
+        }                   
 
-        if (state.getQueue().isEmpty()) {
+        if (carWashState.getQueue().isEmpty()) {
             if (fastMachine) {
-                state.increaseFast();
+                carWashState.increaseFast();
             } else {
-                state.increaseSlow();
+                carWashState.increaseSlow();
             }
         } else {
-            Car next = state.getQueue().remove();
-            double service = fastMachine ? state.nextFastServiceTime() : state.nextSlowServiceTime();
+            Car next = carWashState.getQueue().remove();
+            double service = fastMachine ? carWashState.nextFastServiceTime() : carWashState.nextSlowServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, next, fastMachine));
-            state.dequeueQueueTime(next);
+            carWashState.dequeueQueueTime(next);
         }
 
-        state.setEventSnapshot("Leave", car.getId(), machine);
-        state.notifyObservers();
+        carWashState.setEventSnapshot("Leave", car.getId(), machine);
+        carWashState.notifyObservers();
     }
 }

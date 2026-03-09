@@ -1,7 +1,9 @@
-package carwash;
+package labb6;
 
-import java.util.Locale;
-
+import carwash.ArriveEvent;
+import carwash.Car;
+import carwash.CarWashState;
+import carwash.StatusView;
 import random.ExponentialRandomStream;
 import random.UniformRandomStream;
 import simulator.EventQueue;
@@ -13,7 +15,7 @@ import simulator.StopEvent;
 /**
  * Runs the car wash simulation.
  */
-public class StartSim {
+public class StartCarWashSim {
     public static void run() {
         int fastMachines = 2;
         int slowMachines = 2;
@@ -63,14 +65,14 @@ public class StartSim {
         }
 
         @Override
-        public void execute(Simulator sim, State genericState) {
-            CarWashState state = (CarWashState) genericState;
-            state.advanceTime(getTime());
-            state.setEventSnapshot("Start", -1, "-");
-            state.notifyObservers();
+        public void execute(Simulator sim, State state) {
+            CarWashState carWashState = (CarWashState) state;
+            carWashState.advanceTime(getTime());
+            carWashState.setEventSnapshot("Start", -1, "-");
+            carWashState.notifyObservers();
 
-            Car firstCar = new Car(state.nextCarId());
-            sim.schedule(new ArriveEvent(getTime() + state.nextArrivalDelta(), firstCar));
+            Car firstCar = new Car(carWashState.nextCarId());
+            sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), firstCar));
         }
     }
 
@@ -80,16 +82,14 @@ public class StartSim {
         }
 
         @Override
-        public void execute(Simulator sim, State genericState) {
-            CarWashState state = (CarWashState) genericState;
-            state.advanceTime(getTime());
-            state.setEventSnapshot("Stop", -1, "-");
-            state.notifyObservers();
-            state.setRunning(false);
+        public void execute(Simulator sim, State state) {
+            CarWashState carWashState = (CarWashState) state;
+            carWashState.advanceTime(getTime());
+            carWashState.setEventSnapshot("Stop", -1, "-");
+            carWashState.notifyObservers();
+            carWashState.setRunning(false);
         }
     }
 
-    private static String formatOneDecimal(double value) {
-        return String.format(Locale.US, "%.1f", value);
-    }
+
 }
