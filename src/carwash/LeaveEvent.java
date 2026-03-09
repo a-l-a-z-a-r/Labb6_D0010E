@@ -35,12 +35,18 @@ public class LeaveEvent extends CarWashEvent {
             }
         } else {
             Car next = carWashState.getQueue().remove();
-            double service = fastMachine ? carWashState.nextFastServiceTime() : carWashState.nextSlowServiceTime();
+             double service;                                                                                                                                                               
+                if (fastMachine) {                                                                                                                                                            
+                    service = carWashState.nextFastServiceTime();                                                                                                                             
+                } else {                                                                                                                                                                      
+                    service = carWashState.nextSlowServiceTime();                                                                                                                             
+                }                                                                                                                                                                             
+ 
             sim.schedule(new LeaveEvent(getTime() + service, next, fastMachine));
             carWashState.dequeueQueueTime(next);
         }
 
         carWashState.setEventSnapshot("Leave", car.getId(), machine);
-        carWashState.notifyObservers();
+        carWashState.publishUpdate();
     }
 }

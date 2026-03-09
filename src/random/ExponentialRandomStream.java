@@ -3,6 +3,9 @@ package random;
 
 import java.util.Random;
 
+/**
+ * Random number stream with exponentially distributed samples.
+ */
 public class ExponentialRandomStream {
 	
 	private Random rand;

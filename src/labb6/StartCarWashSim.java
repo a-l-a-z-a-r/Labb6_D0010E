@@ -59,6 +59,9 @@ public class StartCarWashSim {
         view.printSummary();
     }
 
+    /**
+     * Start event specialized for initializing the car wash simulation.
+     */
     private static final class CarWashStartEvent extends StartEvent {
         private CarWashStartEvent(double time) {
             super(time);
@@ -69,13 +72,16 @@ public class StartCarWashSim {
             CarWashState carWashState = (CarWashState) state;
             carWashState.advanceTime(getTime());
             carWashState.setEventSnapshot("Start", -1, "-");
-            carWashState.notifyObservers();
+            carWashState.publishUpdate();
 
             Car firstCar = new Car(carWashState.nextCarId());
             sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), firstCar));
         }
     }
 
+    /**
+     * Stop event specialized for ending the car wash simulation.
+     */
     private static final class CarWashStopEvent extends StopEvent {
         private CarWashStopEvent(double time) {
             super(time);
@@ -86,7 +92,7 @@ public class StartCarWashSim {
             CarWashState carWashState = (CarWashState) state;
             carWashState.advanceTime(getTime());
             carWashState.setEventSnapshot("Stop", -1, "-");
-            carWashState.notifyObservers();
+            carWashState.publishUpdate();
             carWashState.setRunning(false);
         }
     }

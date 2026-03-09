@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"m":"c225_lab6","l":"carwash"},{"m":"c225_lab6","l":"labb6"},{"m":"c225_lab6","l":"random"},{"m":"c225_lab6","l":"simulator"}];updateSearchResults();

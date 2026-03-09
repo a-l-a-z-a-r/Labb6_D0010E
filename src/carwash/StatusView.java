@@ -1,24 +1,26 @@
 package carwash;
 
-import java.util.Formatter;
-import java.util.Locale;
-
-import simulator.Observer;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Console view of simulation events and cumulative statistics.
  */
 public class StatusView implements Observer {
     private final CarWashState state;
-    private final Formatter out;
 
     public StatusView(CarWashState state) {
         this.state = state;
-        this.out = new Formatter(System.out, Locale.US);
     }
+
     @Override
-    public void update() {
-        String carText = state.getEventCarId() >= 0 ? Integer.toString(state.getEventCarId()) : "-";
+    public void update(Observable o, Object arg) {
+          String carText;                                                                                                                                                               
+            if (state.getEventCarId() >= 0) {                                                                                                                                             
+                carText = Integer.toString(state.getEventCarId());                                                                                                                        
+            } else {                                                                                                                                                                      
+                carText = "-";                                                                                                                                                            
+            }                    
         String timeValue = alignLeft(formatNumber(state.getCurrentTime()), 7);
         String eventName = alignLeft(state.getEventName(), 7);
         String carId = alignRight(carText, 4);
@@ -32,30 +34,26 @@ public class StatusView implements Observer {
 
         String line = timeValue + "  " + eventName + "  " + carId + "  " + machine + "  " + freeFast + "  " + freeSlow
                 + "  " + idleTime + "  " + queueTime + "  " + queueSize + "  " + rejected;
-        out.format(line + System.lineSeparator());
-        out.flush();
+        System.out.println(line);
     }
 
     public void printHeader() {
-        out.format("--------------------------------------------------------------" + System.lineSeparator());
-        out.format("   Time  Event      Id  Machine  Fast  Slow  IdleTime  QueueTime  QueueSize  Rejected"
-                + System.lineSeparator());
-        out.format("--------------------------------------------------------------" + System.lineSeparator());
-        out.flush();
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("   Time  Event      Id  Machine  Fast  Slow  IdleTime  QueueTime  QueueSize  Rejected");
+        System.out.println("--------------------------------------------------------------");
     }
 
     public void printSummary() {
         double meanQueue = state.getEnteredCars() == 0 ? 0.0 : state.getTotalQueueTime() / state.getEnteredCars();
-        out.format("--------------------------------------------------------------" + System.lineSeparator());
-        out.format("Total idle machine time: " + formatNumber(state.getTotalIdleTime()) + System.lineSeparator());
-        out.format("Total queueing time:     " + formatNumber(state.getTotalQueueTime()) + System.lineSeparator());
-        out.format("Mean queueing time:      " + formatNumber(meanQueue) + System.lineSeparator());
-        out.format("Rejected cars:           " + state.getRejectedCars() + System.lineSeparator());
-        out.flush();
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("Total idle machine time: " + formatNumber(state.getTotalIdleTime()));
+        System.out.println("Total queueing time:     " + formatNumber(state.getTotalQueueTime()));
+        System.out.println("Mean queueing time:      " + formatNumber(meanQueue));
+        System.out.println("Rejected cars:           " + state.getRejectedCars());
     }
 
     private String formatNumber(double value) {
-        return String.format(Locale.US, "%.2f", value);
+        return String.format("%.2f", value);
     }
 
     private String alignLeft(String value, int width) {

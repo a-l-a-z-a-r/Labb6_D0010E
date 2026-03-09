@@ -1,17 +1,12 @@
 package simulator;
 
-import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Shared simulation state.
  */
-public class State {
+public class State extends Observable {
     private boolean running = true;
-    private final ArrayList<Observer> observers = new ArrayList<>();
-
-    public void addObserver(Observer o) {
-        observers.add(o);
-    }
 
     public void setRunning(boolean r) {
         running = r;
@@ -21,9 +16,8 @@ public class State {
         return running;
     }
 
-    public void notifyObservers() {
-        for (Observer observer : observers) {
-            observer.update();
-        }
+    public void publishUpdate() {
+        setChanged();
+        notifyObservers();
     }
 }

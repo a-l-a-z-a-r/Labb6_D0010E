@@ -4,6 +4,9 @@ package random;
 import java.util.Random;
 
 
+/**
+ * Random number stream with uniformly distributed samples in a range.
+ */
 public class UniformRandomStream {
 
 	private Random rand;
