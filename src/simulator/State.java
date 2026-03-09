@@ -16,8 +16,8 @@ public class State extends Observable {
         return running;
     }
 
-    public void publishUpdate() {
+    public void publishUpdate(Object arg) {
         setChanged();
-        notifyObservers();
+        notifyObservers(arg);
     }
 }

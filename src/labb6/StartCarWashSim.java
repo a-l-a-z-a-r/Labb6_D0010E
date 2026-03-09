@@ -1,16 +1,13 @@
 package labb6;
 
-import carwash.ArriveEvent;
-import carwash.Car;
 import carwash.CarWashState;
+import carwash.CarWashStartEvent;
+import carwash.CarWashStopEvent;
 import carwash.StatusView;
 import random.ExponentialRandomStream;
 import random.UniformRandomStream;
 import simulator.EventQueue;
 import simulator.Simulator;
-import simulator.StartEvent;
-import simulator.State;
-import simulator.StopEvent;
 
 /**
  * Runs the car wash simulation.
@@ -58,44 +55,4 @@ public class StartCarWashSim {
         sim.run();
         view.printSummary();
     }
-
-    /**
-     * Start event specialized for initializing the car wash simulation.
-     */
-    private static final class CarWashStartEvent extends StartEvent {
-        private CarWashStartEvent(double time) {
-            super(time);
-        }
-
-        @Override
-        public void execute(Simulator sim, State state) {
-            CarWashState carWashState = (CarWashState) state;
-            carWashState.advanceTime(getTime());
-            carWashState.setEventSnapshot("Start", -1, "-");
-            carWashState.publishUpdate();
-
-            Car firstCar = new Car(carWashState.nextCarId());
-            sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), firstCar));
-        }
-    }
-
-    /**
-     * Stop event specialized for ending the car wash simulation.
-     */
-    private static final class CarWashStopEvent extends StopEvent {
-        private CarWashStopEvent(double time) {
-            super(time);
-        }
-
-        @Override
-        public void execute(Simulator sim, State state) {
-            CarWashState carWashState = (CarWashState) state;
-            carWashState.advanceTime(getTime());
-            carWashState.setEventSnapshot("Stop", -1, "-");
-            carWashState.publishUpdate();
-            carWashState.setRunning(false);
-        }
-    }
-
-
 }

@@ -1,5 +1,7 @@
 package carwash;
 
+import java.util.Objects;
+
 import random.ExponentialRandomStream;
 import random.UniformRandomStream;
 import simulator.State;
@@ -24,157 +26,134 @@ public class CarWashState extends State {
     private double totalQueueTime;
     private double totalIdleTime;
 
-    private String eventName = "";
-    private int eventCarId = -1;
-    private String eventMachine = "-";
-
-    public CarWashState(int fastMachines, int slowMachines,  int maxQueueSize, ExponentialRandomStream arrivalStream, UniformRandomStream fastServiceStream, UniformRandomStream slowServiceStream) {
+    public CarWashState(int fastMachines, int slowMachines, int maxQueueSize, ExponentialRandomStream arrivalStream,
+            UniformRandomStream fastServiceStream, UniformRandomStream slowServiceStream) {
+        if (fastMachines < 0 || slowMachines < 0 || maxQueueSize < 0) {
+            throw new IllegalArgumentException("Machine counts and maxQueueSize must be >= 0.");
+        }
         this.totalFast = fastMachines;
         this.totalSlow = slowMachines;
         this.freeFast = fastMachines;
         this.freeSlow = slowMachines;
         this.maxQueueSize = maxQueueSize;
-        this.arrivalStream = arrivalStream;
-        this.fastServiceStream = fastServiceStream;
-        this.slowServiceStream = slowServiceStream;
+        this.arrivalStream = Objects.requireNonNull(arrivalStream, "arrivalStream must not be null.");
+        this.fastServiceStream = Objects.requireNonNull(fastServiceStream, "fastServiceStream must not be null.");
+        this.slowServiceStream = Objects.requireNonNull(slowServiceStream, "slowServiceStream must not be null.");
     }
 
-    public void setCurrentTime(double t) {
-        currentTime = t;
-    }
-
-    public double getCurrentTime() {
+    double getCurrentTime() {
         return currentTime;
     }
 
-    public void advanceTime(double newTime) {
-        double lastTimeSession = newTime - currentTime;
-        if (lastTimeSession > 0) {
-            totalIdleTime += lastTimeSession * (freeFast + freeSlow);
-            totalQueueTime += lastTimeSession * queue.size();
+    void advanceTime(double newTime) {
+        if (!Double.isFinite(newTime) || newTime < 0) {
+            throw new IllegalArgumentException("newTime must be finite and >= 0.");
         }
+        if (newTime < currentTime) {
+            throw new IllegalArgumentException("Time cannot move backwards.");
+        }
+
+        double lastTimeSession = newTime - currentTime;
+        totalIdleTime += lastTimeSession * (freeFast + freeSlow);
+        totalQueueTime += lastTimeSession * queue.size();
         currentTime = newTime;
     }
 
-    public int getFreeFast() {
+    int getFreeFast() {
         return freeFast;
     }
 
-    public int getFreeSlow() {
+    int getFreeSlow() {
         return freeSlow;
     }
 
-    public void decreaseFast() {
+    void decreaseFast() {
+        if (freeFast <= 0) {
+            throw new IllegalStateException("No free fast machines to allocate.");
+        }
         freeFast--;
     }
 
-    public void increaseFast() {
+    void increaseFast() {
+        if (freeFast >= totalFast) {
+            throw new IllegalStateException("Fast machine count cannot exceed total.");
+        }
         freeFast++;
     }
 
-    public void decreaseSlow() {
+    void decreaseSlow() {
+        if (freeSlow <= 0) {
+            throw new IllegalStateException("No free slow machines to allocate.");
+        }
         freeSlow--;
     }
 
-    public void increaseSlow() {
+    void increaseSlow() {
+        if (freeSlow >= totalSlow) {
+            throw new IllegalStateException("Slow machine count cannot exceed total.");
+        }
         freeSlow++;
     }
 
-    public FifoQueue getQueue() {
+    FifoQueue getQueue() {
         return queue;
     }
 
-    public boolean canQueueMore() {
+    boolean canQueueMore() {
         return queue.size() < maxQueueSize;
     }
 
-    public void markQueued(Car car) {
+    void markQueued(Car car) {
+        Objects.requireNonNull(car, "car must not be null.");
         car.setQueuedAt(currentTime);
     }
 
-    public double dequeueQueueTime(Car car) {
+    double dequeueQueueTime(Car car) {
+        Objects.requireNonNull(car, "car must not be null.");
         return currentTime - car.getQueuedAt();
     }
 
-    public void rejectCar() {
+    void rejectCar() {
         rejectedCars++;
     }
 
-    public void addQueueTime(double t) {
-        totalQueueTime += t;
-    }
-
-    public void addIdleTime(double t) {
-        totalIdleTime += t;
-    }
-
-    public double cariscomingnow() {
+    double cariscomingnow() {
         return arrivalStream.next();
     }
 
-    public double nextFastServiceTime() {
+    double nextFastServiceTime() {
         return fastServiceStream.next();
     }
 
-    public double nextSlowServiceTime() {
+    double nextSlowServiceTime() {
         return slowServiceStream.next();
     }
 
-    public int nextCarId() {
+    int nextCarId() {
         return nextCarId++;
     }
 
-    public void countEnteredCar() {
+    void countEnteredCar() {
         enteredCars++;
     }
 
-    public int getEnteredCars() {
+    int getEnteredCars() {
         return enteredCars;
     }
 
-    public int getRejectedCars() {
+    int getRejectedCars() {
         return rejectedCars;
     }
 
-    public double getTotalQueueTime() {
+    double getTotalQueueTime() {
         return totalQueueTime;
     }
 
-    public double getTotalIdleTime() {
+    double getTotalIdleTime() {
         return totalIdleTime;
     }
 
-    public int getQueueSize() {
+    int getQueueSize() {
         return queue.size();
-    }
-
-    public int getTotalFast() {
-        return totalFast;
-    }
-
-    public int getTotalSlow() {
-        return totalSlow;
-    }
-
-    public int getMaxQueueSize() {
-        return maxQueueSize;
-    }
-
-    public void setEventSnapshot(String eventName, int carId, String machine) {
-        this.eventName = eventName;
-        this.eventCarId = carId;
-        this.eventMachine = machine;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public int getEventCarId() {
-        return eventCarId;
-    }
-
-    public String getEventMachine() {
-        return eventMachine;
     }
 }

@@ -8,6 +8,9 @@ public class Car {
     private double queuedAt;
 
     public Car(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("id must be >= 0.");
+        }
         this.id = id;
         this.queuedAt = -1;
     }
@@ -17,6 +20,9 @@ public class Car {
     }
 
     public void setQueuedAt(double queuedAt) {
+        if (!Double.isFinite(queuedAt) || queuedAt < 0) {
+            throw new IllegalArgumentException("queuedAt must be finite and >= 0.");
+        }
         this.queuedAt = queuedAt;
     }
 

@@ -7,6 +7,9 @@ public abstract class Event {
     private final double time;
 
     protected Event(double time) {
+        if (!Double.isFinite(time) || time < 0) {
+            throw new IllegalArgumentException("time must be finite and >= 0.");
+        }
         this.time = time;
     }
 

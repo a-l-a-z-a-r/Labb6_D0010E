@@ -41,7 +41,6 @@ public class ArriveEvent extends CarWashEvent {
         Car nextCar = new Car(carWashState.nextCarId());
         sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), nextCar));
 
-        carWashState.setEventSnapshot("Arrive", car.getId(), machine);
-        carWashState.publishUpdate();
+        carWashState.publishUpdate(new EventSnapshot("Arrive", car.getId(), machine));
     }
 }

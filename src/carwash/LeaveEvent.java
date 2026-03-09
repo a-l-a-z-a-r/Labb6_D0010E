@@ -46,7 +46,6 @@ public class LeaveEvent extends CarWashEvent {
             carWashState.dequeueQueueTime(next);
         }
 
-        carWashState.setEventSnapshot("Leave", car.getId(), machine);
-        carWashState.publishUpdate();
+        carWashState.publishUpdate(new EventSnapshot("Leave", car.getId(), machine));
     }
 }

@@ -1,5 +1,7 @@
 package carwash;
 
+import java.util.Objects;
+
 import simulator.Event;
 
 /**
@@ -10,7 +12,7 @@ public abstract class CarWashEvent extends Event {
 
     protected CarWashEvent(double time, Car car) {
         super(time);
-        this.car = car;
+        this.car = Objects.requireNonNull(car, "car must not be null.");
     }
 
     public Car getCar() {

@@ -15,16 +15,17 @@ public class StatusView implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        EventSnapshot snapshot = (EventSnapshot) arg;
           String carText;                                                                                                                                                               
-            if (state.getEventCarId() >= 0) {                                                                                                                                             
-                carText = Integer.toString(state.getEventCarId());                                                                                                                        
+            if (snapshot.getCarId() >= 0) {                                                                                                                                             
+                carText = Integer.toString(snapshot.getCarId());                                                                                                                        
             } else {                                                                                                                                                                      
                 carText = "-";                                                                                                                                                            
             }                    
         String timeValue = alignLeft(formatNumber(state.getCurrentTime()), 7);
-        String eventName = alignLeft(state.getEventName(), 7);
+        String eventName = alignLeft(snapshot.getEventName(), 7);
         String carId = alignRight(carText, 4);
-        String machine = alignLeft(state.getEventMachine(), 7);
+        String machine = alignLeft(snapshot.getMachine(), 7);
         String freeFast = alignRight(Integer.toString(state.getFreeFast()), 4);
         String freeSlow = alignRight(Integer.toString(state.getFreeSlow()), 4);
         String idleTime = alignRight(formatNumber(state.getTotalIdleTime()), 8);
