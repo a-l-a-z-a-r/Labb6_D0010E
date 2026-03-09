@@ -25,7 +25,7 @@ public class StatusView implements Observer {
         String timeValue = alignLeft(formatNumber(state.getCurrentTime()), 7);
         String eventName = alignLeft(snapshot.getEventName(), 7);
         String carId = alignRight(carText, 4);
-        String machine = alignLeft(snapshot.getMachine(), 7);
+        String machine = alignLeft(snapshot.getMachine().getLabel(), 7);
         String freeFast = alignRight(Integer.toString(state.getFreeFast()), 4);
         String freeSlow = alignRight(Integer.toString(state.getFreeSlow()), 4);
         String idleTime = alignRight(formatNumber(state.getTotalIdleTime()), 8);

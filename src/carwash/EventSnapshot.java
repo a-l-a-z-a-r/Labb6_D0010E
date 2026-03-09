@@ -8,9 +8,9 @@ import java.util.Objects;
 public class EventSnapshot {
     private final String eventName;
     private final int carId;
-    private final String machine;
+    private final MachineType machine;
 
-    public EventSnapshot(String eventName, int carId, String machine) {
+    public EventSnapshot(String eventName, int carId, MachineType machine) {
         if (carId < -1) {
             throw new IllegalArgumentException("carId must be >= -1.");
         }
@@ -27,7 +27,7 @@ public class EventSnapshot {
         return carId;
     }
 
-    public String getMachine() {
+    public MachineType getMachine() {
         return machine;
     }
 }

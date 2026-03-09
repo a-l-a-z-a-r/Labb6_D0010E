@@ -16,20 +16,20 @@ public class ArriveEvent extends CarWashEvent {
         CarWashState carWashState = (CarWashState) state;
         carWashState.advanceTime(getTime());
 
-        String machine = "-";
+        MachineType machine = MachineType.NONE;
 
         if (carWashState.getFreeFast() > 0) {
             carWashState.decreaseFast();
             carWashState.countEnteredCar();
             double service = carWashState.nextFastServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, car, true));
-            machine = "Fast";
+            machine = MachineType.FAST;
         } else if (carWashState.getFreeSlow() > 0) {
             carWashState.decreaseSlow();
             carWashState.countEnteredCar();
             double service = carWashState.nextSlowServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, car, false));
-            machine = "Slow";
+            machine = MachineType.SLOW;
         } else if (carWashState.canQueueMore()) {
             carWashState.countEnteredCar();
             carWashState.getQueue().add(car);

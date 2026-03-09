@@ -49,11 +49,14 @@ public class CarWashState extends State {
         if (!Double.isFinite(newTime) || newTime < 0) {
             throw new IllegalArgumentException("newTime must be finite and >= 0.");
         }
-        if (newTime < currentTime) {
+        double lastTimeSession = newTime - currentTime;
+        if (lastTimeSession < 0) {
             throw new IllegalArgumentException("Time cannot move backwards.");
         }
+        if (lastTimeSession == 0) {
+            return;
+        }
 
-        double lastTimeSession = newTime - currentTime;
         totalIdleTime += lastTimeSession * (freeFast + freeSlow);
         totalQueueTime += lastTimeSession * queue.size();
         currentTime = newTime;

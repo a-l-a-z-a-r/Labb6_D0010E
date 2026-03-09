@@ -16,7 +16,7 @@ public class CarWashStopEvent extends StopEvent {
     public void execute(Simulator sim, State state) {
         CarWashState carWashState = (CarWashState) state;
         carWashState.advanceTime(getTime());
-        carWashState.publishUpdate(new EventSnapshot("Stop", -1, "-"));
+        carWashState.publishUpdate(new EventSnapshot("Stop", -1, MachineType.NONE));
         carWashState.setRunning(false);
     }
 }

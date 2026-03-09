@@ -16,7 +16,7 @@ public class CarWashStartEvent extends StartEvent {
     public void execute(Simulator sim, State state) {
         CarWashState carWashState = (CarWashState) state;
         carWashState.advanceTime(getTime());
-        carWashState.publishUpdate(new EventSnapshot("Start", -1, "-"));
+        carWashState.publishUpdate(new EventSnapshot("Start", -1, MachineType.NONE));
 
         Car firstCar = new Car(carWashState.nextCarId());
         sim.schedule(new ArriveEvent(getTime() + carWashState.cariscomingnow(), firstCar));

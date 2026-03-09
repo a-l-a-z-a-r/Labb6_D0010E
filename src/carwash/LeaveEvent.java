@@ -20,12 +20,12 @@ public class LeaveEvent extends CarWashEvent {
         carWashState.advanceTime(getTime());
 
                                                                                                                                                                                        
-        String machine;                                                                                                                                                               
-        if (fastMachine) {                                                                                                                                                            
-            machine = "Fast";                                                                                                                                                         
-        } else {                                                                                                                                                                      
-            machine = "Slow";                                                                                                                                                         
-        }                   
+        MachineType machine;
+        if (fastMachine) {
+            machine = MachineType.FAST;
+        } else {
+            machine = MachineType.SLOW;
+        }
 
         if (carWashState.getQueue().isEmpty()) {
             if (fastMachine) {
