@@ -19,36 +19,56 @@ public class StatusView implements Observer {
     @Override
     public void update() {
         String carText = state.getEventCarId() >= 0 ? Integer.toString(state.getEventCarId()) : "-";
-        out.format(
-                "%7.2f  %-7s  %4s  %7s  %4d  %4d  %8.2f  %9.2f  %9d  %8d  %s%n",
-                state.getCurrentTime(),
-                state.getEventName(),
-                carText,
-                state.getEventMachine(),
-                state.getFreeFast(),
-                state.getFreeSlow(),
-                state.getTotalIdleTime(),
-                state.getTotalQueueTime(),
-                state.getQueueSize(),
-                state.getRejectedCars(),
-                state.getEventNote());
+        String timeValue = alignLeft(formatNumber(state.getCurrentTime()), 7);
+        String eventName = alignLeft(state.getEventName(), 7);
+        String carId = alignRight(carText, 4);
+        String machine = alignLeft(state.getEventMachine(), 7);
+        String freeFast = alignRight(Integer.toString(state.getFreeFast()), 4);
+        String freeSlow = alignRight(Integer.toString(state.getFreeSlow()), 4);
+        String idleTime = alignRight(formatNumber(state.getTotalIdleTime()), 8);
+        String queueTime = alignRight(formatNumber(state.getTotalQueueTime()), 9);
+        String queueSize = alignRight(Integer.toString(state.getQueueSize()), 9);
+        String rejected = alignRight(Integer.toString(state.getRejectedCars()), 8);
+
+        String line = timeValue + "  " + eventName + "  " + carId + "  " + machine + "  " + freeFast + "  " + freeSlow
+                + "  " + idleTime + "  " + queueTime + "  " + queueSize + "  " + rejected;
+        out.format(line + System.lineSeparator());
         out.flush();
     }
 
     public void printHeader() {
-        out.format("--------------------------------------------------------------%n");
-        out.format("   Time  Event      Id  Machine  Fast  Slow  IdleTime  QueueTime  QueueSize  Rejected  Note%n");
-        out.format("--------------------------------------------------------------%n");
+        out.format("--------------------------------------------------------------" + System.lineSeparator());
+        out.format("   Time  Event      Id  Machine  Fast  Slow  IdleTime  QueueTime  QueueSize  Rejected"
+                + System.lineSeparator());
+        out.format("--------------------------------------------------------------" + System.lineSeparator());
         out.flush();
     }
 
     public void printSummary() {
         double meanQueue = state.getEnteredCars() == 0 ? 0.0 : state.getTotalQueueTime() / state.getEnteredCars();
-        out.format("--------------------------------------------------------------%n");
-        out.format("Total idle machine time: %.2f%n", state.getTotalIdleTime());
-        out.format("Total queueing time:     %.2f%n", state.getTotalQueueTime());
-        out.format("Mean queueing time:      %.2f%n", meanQueue);
-        out.format("Rejected cars:           %d%n", state.getRejectedCars());
+        out.format("--------------------------------------------------------------" + System.lineSeparator());
+        out.format("Total idle machine time: " + formatNumber(state.getTotalIdleTime()) + System.lineSeparator());
+        out.format("Total queueing time:     " + formatNumber(state.getTotalQueueTime()) + System.lineSeparator());
+        out.format("Mean queueing time:      " + formatNumber(meanQueue) + System.lineSeparator());
+        out.format("Rejected cars:           " + state.getRejectedCars() + System.lineSeparator());
         out.flush();
+    }
+
+    private String formatNumber(double value) {
+        return String.format(Locale.US, "%.2f", value);
+    }
+
+    private String alignLeft(String value, int width) {
+        if (value.length() >= width) {
+            return value;
+        }
+        return value + " ".repeat(width - value.length());
+    }
+
+    private String alignRight(String value, int width) {
+        if (value.length() >= width) {
+            return value;
+        }
+        return " ".repeat(width - value.length()) + value;
     }
 }

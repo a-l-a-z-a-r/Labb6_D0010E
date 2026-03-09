@@ -1,7 +1,5 @@
 package carwash;
 
-import java.util.Locale;
-
 import simulator.Simulator;
 import simulator.State;
 
@@ -22,7 +20,6 @@ public class LeaveEvent extends CarWashEvent {
         state.advanceTime(getTime());
 
         String machine = fastMachine ? "Fast" : "Slow";
-        String note = "machine becomes free";
 
         if (state.getQueue().isEmpty()) {
             if (fastMachine) {
@@ -32,18 +29,12 @@ public class LeaveEvent extends CarWashEvent {
             }
         } else {
             Car next = state.getQueue().remove();
-            double queuedFor = state.dequeueQueueTime(next);
             double service = fastMachine ? state.nextFastServiceTime() : state.nextSlowServiceTime();
             sim.schedule(new LeaveEvent(getTime() + service, next, fastMachine));
-            note = String.format(
-                    Locale.US,
-                    "next car %d from queue, waited %.2f, service %.2f",
-                    next.getId(),
-                    queuedFor,
-                    service);
+            state.dequeueQueueTime(next);
         }
 
-        state.setEventSnapshot("Leave", car.getId(), machine, note);
+        state.setEventSnapshot("Leave", car.getId(), machine);
         state.notifyObservers();
     }
 }

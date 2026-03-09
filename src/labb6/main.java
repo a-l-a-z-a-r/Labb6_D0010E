@@ -1,9 +1,11 @@
 package labb6;
 
-public class main {
+import carwash.StartSim;
+
+public class Main {
 
 	public static void main(String[] args) {
-		simulator.run();
+		StartSim.run();
 	}
 
 }

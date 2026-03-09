@@ -1,17 +1,20 @@
-package simulator;
+package carwash;
 
-import carwash.ArriveEvent;
-import carwash.Car;
-import carwash.CarWashState;
-import carwash.StatusView;
+import java.util.Locale;
+
 import random.ExponentialRandomStream;
 import random.UniformRandomStream;
+import simulator.EventQueue;
+import simulator.Simulator;
+import simulator.StartEvent;
+import simulator.State;
+import simulator.StopEvent;
 
 /**
  * Runs the car wash simulation.
  */
-public class MainSim {
-    public static void main(String[] args) {
+public class StartSim {
+    public static void run() {
         int fastMachines = 2;
         int slowMachines = 2;
         int maxQueueSize = 5;
@@ -21,32 +24,30 @@ public class MainSim {
         double fastMax = 4.6;
         double slowMin = 3.5;
         double slowMax = 6.7;
-        long seed = 12348;
+        long seed = 1234;
 
         ExponentialRandomStream arrivals = new ExponentialRandomStream(lambda, seed);
         UniformRandomStream fastService = new UniformRandomStream(fastMin, fastMax, seed);
         UniformRandomStream slowService = new UniformRandomStream(slowMin, slowMax, seed);
 
-        CarWashState state = new CarWashState(
-                fastMachines,
-                slowMachines,
-                maxQueueSize,
-                arrivals,
-                fastService,
-                slowService);
+        CarWashState state = new CarWashState(fastMachines,slowMachines,maxQueueSize,arrivals,fastService,slowService);
 
         EventQueue queue = new EventQueue();
         Simulator sim = new Simulator(queue, state);
         StatusView view = new StatusView(state);
         state.addObserver(view);
 
-        System.out.printf("Fast machines: %d%n", fastMachines);
-        System.out.printf("Slow machines: %d%n", slowMachines);
-        System.out.printf("Fast distribution: (%.1f, %.1f)%n", fastMin, fastMax);
-        System.out.printf("Slow distribution: (%.1f, %.1f)%n", slowMin, slowMax);
-        System.out.printf("Exponential distribution with lambda = %.1f%n", lambda);
-        System.out.printf("seed = %d%n", seed);
-        System.out.printf("Max Queue size: %d%n", maxQueueSize);
+        String fastRange = "(" + fastMin + ", " + fastMax + ")";
+        String slowRange = "(" + slowMin + ", " + slowMax + ")";
+        String lambdaText = lambda + "";
+
+        System.out.println("Fast machines: " + fastMachines);
+        System.out.println("Slow machines: " + slowMachines);
+        System.out.println("Fast distribution: " + fastRange);
+        System.out.println("Slow distribution: " + slowRange);
+        System.out.println("Exponential distribution with lambda = " + lambdaText);
+        System.out.println("seed = " + seed);
+        System.out.println("Max Queue size: " + maxQueueSize);
         view.printHeader();
 
         sim.schedule(new CarWashStartEvent(0.0));
@@ -65,7 +66,7 @@ public class MainSim {
         public void execute(Simulator sim, State genericState) {
             CarWashState state = (CarWashState) genericState;
             state.advanceTime(getTime());
-            state.setEventSnapshot("Start", -1, "-", "");
+            state.setEventSnapshot("Start", -1, "-");
             state.notifyObservers();
 
             Car firstCar = new Car(state.nextCarId());
@@ -82,9 +83,13 @@ public class MainSim {
         public void execute(Simulator sim, State genericState) {
             CarWashState state = (CarWashState) genericState;
             state.advanceTime(getTime());
-            state.setEventSnapshot("Stop", -1, "-", "");
+            state.setEventSnapshot("Stop", -1, "-");
             state.notifyObservers();
-            super.execute(sim, genericState);
+            state.setRunning(false);
         }
+    }
+
+    private static String formatOneDecimal(double value) {
+        return String.format(Locale.US, "%.1f", value);
     }
 }

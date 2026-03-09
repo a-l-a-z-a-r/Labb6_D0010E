@@ -1,7 +1,7 @@
-package Event;
+package event;
 
 public class Arrive extends carwash.ArriveEvent {
-	public Arrive(double time, Car.Car car) {
-		super(time, car);
-	}
+    public Arrive(double time, car.Car car) {
+        super(time, car);
+    }
 }

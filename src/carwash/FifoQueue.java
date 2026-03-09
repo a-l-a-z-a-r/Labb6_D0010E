@@ -1,20 +1,19 @@
 package carwash;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.ArrayList;
 
 /**
- * FIFO queue of cars waiting for service.
+ * Simple FIFO list of cars waiting for service.
  */
-public class FIFO {
-    private final Queue<Car> queue = new ArrayDeque<>();
+public class FifoQueue {
+    private final ArrayList<Car> queue = new ArrayList<>();
 
     public void add(Car c) {
         queue.add(c);
     }
 
     public Car remove() {
-        return queue.remove();
+        return queue.remove(0);
     }
 
     public boolean isEmpty() {

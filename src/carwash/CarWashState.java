@@ -14,7 +14,7 @@ public class CarWashState extends State {
     private int freeFast;
     private int freeSlow;
     private final int maxQueueSize;
-    private final FIFO queue = new FIFO();
+    private final FifoQueue queue = new FifoQueue();
     private final UniformRandomStream fastServiceStream;
     private final UniformRandomStream slowServiceStream;
     private final ExponentialRandomStream arrivalStream;
@@ -27,7 +27,6 @@ public class CarWashState extends State {
     private String eventName = "";
     private int eventCarId = -1;
     private String eventMachine = "-";
-    private String eventNote = "";
 
     public CarWashState(
             int fastMachines,
@@ -87,7 +86,7 @@ public class CarWashState extends State {
         freeSlow++;
     }
 
-    public FIFO getQueue() {
+    public FifoQueue getQueue() {
         return queue;
     }
 
@@ -167,11 +166,10 @@ public class CarWashState extends State {
         return maxQueueSize;
     }
 
-    public void setEventSnapshot(String eventName, int carId, String machine, String note) {
+    public void setEventSnapshot(String eventName, int carId, String machine) {
         this.eventName = eventName;
         this.eventCarId = carId;
         this.eventMachine = machine;
-        this.eventNote = note;
     }
 
     public String getEventName() {
@@ -184,9 +182,5 @@ public class CarWashState extends State {
 
     public String getEventMachine() {
         return eventMachine;
-    }
-
-    public String getEventNote() {
-        return eventNote;
     }
 }

@@ -1,14 +1,13 @@
 package simulator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Shared simulation state.
  */
 public class State {
     private boolean running = true;
-    private final List<Observer> observers = new ArrayList<>();
+    private final ArrayList<Observer> observers = new ArrayList<>();
 
     public void addObserver(Observer o) {
         observers.add(o);
